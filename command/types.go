@@ -1,10 +1,19 @@
 package command
 
 import (
+	"fmt"
+	"io"
+
+	"github.com/chroju/awscccli/awscc"
 	"github.com/spf13/cobra"
 )
 
-type types struct{}
+type types struct {
+	Manager awscc.AWSCCManager
+
+	StdOut io.Writer
+	ErrOut io.Writer
+}
 
 func newTypesCommand(globalOption *GlobalOption) *cobra.Command {
 	types := &types{}
@@ -14,6 +23,15 @@ func newTypesCommand(globalOption *GlobalOption) *cobra.Command {
 		Short: "",
 		Args:  nil,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			manager, err := awscc.New(globalOption.Profile, globalOption.Region)
+			if err != nil {
+				return err
+			}
+			types.Manager = manager
+
+			types.StdOut = globalOption.StdOut
+			types.ErrOut = globalOption.ErrOut
+
 			return types.Execute()
 		},
 	}
@@ -24,6 +42,13 @@ func newTypesCommand(globalOption *GlobalOption) *cobra.Command {
 	return cmd
 }
 
-func (o *types) Execute() error {
+func (types *types) Execute() error {
+	resp, err := types.Manager.ListTypes()
+	if err != nil {
+		return err
+	}
+	for _, v := range resp {
+		fmt.Fprintln(types.StdOut, *v)
+	}
 	return nil
 }
