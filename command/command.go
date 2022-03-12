@@ -26,10 +26,11 @@ type GlobalOption struct {
 func NewCommand(version string, stdOutWriter, errOutWriter io.Writer) (*cobra.Command, error) {
 	o := &GlobalOption{}
 	cmd := &cobra.Command{
-		Use:     commandName,
-		Version: version,
-		Short:   shortDescription,
-		Long:    longDescription,
+		Use:          commandName,
+		Version:      version,
+		Short:        shortDescription,
+		Long:         longDescription,
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return errors.New("Use subcommand: types, list, get")
 		},
