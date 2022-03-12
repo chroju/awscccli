@@ -1,6 +1,10 @@
 awscccli
 ========
 
+[![Release badge](https://img.shields.io/github/v/release/chroju/awscccli.svg)](https://github.com/chroju/awscccli/releases)
+[![Test badge](https://github.com/chroju/parade/workflows/test/badge.svg)](https://github.com/chroju/awscccli/actions?workflow=test)
+[![Coverage Status](https://coveralls.io/repos/github/chroju/awscccli/badge.svg?branch=main)](https://coveralls.io/github/chroju/awscccli?branch=main)
+
 `awscccli` (AWS Cloud Control API CLI) is a simple style AWS command line tool with [AWS Cloud Control API](https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/what-is-cloudcontrolapi.html). `awscccli` supports only read actions (list, get).
 
 Install
