@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/chroju/awscccli/awscc"
 	"github.com/spf13/cobra"
@@ -48,7 +49,9 @@ func (types *types) Execute() error {
 		return err
 	}
 	for _, v := range resp {
-		fmt.Fprintln(types.StdOut, *v)
+		if strings.HasPrefix(*v, "AWS::") {
+			fmt.Fprintln(types.StdOut, *v)
+		}
 	}
 	return nil
 }
