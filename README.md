@@ -1,7 +1,7 @@
 awscccli
 ========
 
-`awscccli` is a command line tool for [AWS Cloud Control API](https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/what-is-cloudcontrolapi.html). `awscccli` supports only read actions (list, get).
+`awscccli` (AWS Cloud Control API CLI) is a simple style AWS command line tool with [AWS Cloud Control API](https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/what-is-cloudcontrolapi.html). `awscccli` supports only read actions (list, get).
 
 Install
 -------
