@@ -48,6 +48,7 @@ func NewCommand(version string, stdOutWriter, errOutWriter io.Writer) (*cobra.Co
 	cmd.AddCommand(
 		newTypesCommand(o),
 		newListCommand(o),
+		newGetCommand(o),
 	)
 
 	return cmd, nil

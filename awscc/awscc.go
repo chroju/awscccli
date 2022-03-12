@@ -14,6 +14,7 @@ import (
 type AWSCCManager interface {
 	ListTypes() ([]*string, error)
 	ListResources(string) ([]*string, error)
+	GetResource(string, string) (*string, error)
 }
 
 type awsccManager struct {
@@ -101,4 +102,19 @@ func (m *awsccManager) ListResources(typeName string) ([]*string, error) {
 	}
 
 	return resp, nil
+}
+
+// GetResource gets a resource.
+func (m *awsccManager) GetResource(typeName, Identifier string) (*string, error) {
+	input := &cloudcontrolapi.GetResourceInput{
+		TypeName:   aws.String(typeName),
+		Identifier: aws.String(Identifier),
+	}
+
+	output, err := m.cloudControlAPI.GetResource(input)
+	if err != nil {
+		return nil, err
+	}
+
+	return output.ResourceDescription.Properties, nil
 }
