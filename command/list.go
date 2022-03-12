@@ -1,11 +1,13 @@
 package command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
 	"github.com/chroju/awscccli/awscc"
 	"github.com/spf13/cobra"
+	yaml "gopkg.in/yaml.v3"
 )
 
 type list struct {
@@ -15,6 +17,8 @@ type list struct {
 	ErrOut io.Writer
 
 	typeName string
+	format   string
+	details  bool
 }
 
 func newListCommand(globalOption *GlobalOption) *cobra.Command {
@@ -38,10 +42,28 @@ func newListCommand(globalOption *GlobalOption) *cobra.Command {
 			list.StdOut = globalOption.StdOut
 			list.ErrOut = globalOption.ErrOut
 
+			args = cmd.Flags().Args()
+			list.details, err = cmd.Flags().GetBool("details")
+			if err != nil {
+				return err
+			}
+
+			format, err := cmd.Flags().GetString("format")
+			if err != nil {
+				return err
+			}
+			if format == "yaml" || format == "json" {
+				list.format = format
+			} else {
+				return fmt.Errorf("--format must be yaml or json")
+			}
+
 			return list.Execute()
 		},
 	}
 
+	cmd.Flags().String("format", "json", "output format (effective only with --details)")
+	cmd.Flags().Bool("details", false, "show each resource details")
 	cmd.SetOut(globalOption.StdOut)
 	cmd.SetErr(globalOption.ErrOut)
 
@@ -53,8 +75,36 @@ func (list *list) Execute() error {
 	if err != nil {
 		return err
 	}
-	for _, v := range resp {
-		fmt.Fprintln(list.StdOut, *v)
+
+	if list.details {
+		resources := make([]map[string]interface{}, len(resp))
+		var i int
+		for _, value := range resp {
+			var f map[string]interface{}
+			if err = json.Unmarshal([]byte(*value), &f); err != nil {
+				return err
+			}
+			resources[i] = f
+			i++
+		}
+
+		var data []byte
+
+		switch list.format {
+		case "yaml":
+			data, err = yaml.Marshal(resources)
+		case "json":
+			data, err = json.MarshalIndent(resources, "", "  ")
+		}
+		if err != nil {
+			return err
+		}
+
+		fmt.Fprintf(list.StdOut, "%v\n", string(data))
+	} else {
+		for key := range resp {
+			fmt.Fprintln(list.StdOut, *key)
+		}
 	}
 	return nil
 }

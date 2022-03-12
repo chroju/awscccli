@@ -13,7 +13,7 @@ import (
 // AWSCCManager is the wrapper of Cloud Control API.
 type AWSCCManager interface {
 	ListTypes() ([]*string, error)
-	ListResources(string) ([]*string, error)
+	ListResources(string) (map[*string]*string, error)
 	GetResource(string, string) (*string, error)
 }
 
@@ -77,7 +77,7 @@ func (m *awsccManager) ListTypes() ([]*string, error) {
 }
 
 // ListResources lists resources.
-func (m *awsccManager) ListResources(typeName string) ([]*string, error) {
+func (m *awsccManager) ListResources(typeName string) (map[*string]*string, error) {
 	input := &cloudcontrolapi.ListResourcesInput{
 		TypeName:   aws.String(typeName),
 		MaxResults: aws.Int64(100),
@@ -96,9 +96,9 @@ func (m *awsccManager) ListResources(typeName string) ([]*string, error) {
 		input.NextToken = output.NextToken
 	}
 
-	resp := make([]*string, len(resourceDescriptions))
-	for i, v := range resourceDescriptions {
-		resp[i] = v.Identifier
+	resp := make(map[*string]*string)
+	for _, v := range resourceDescriptions {
+		resp[v.Identifier] = v.Properties
 	}
 
 	return resp, nil
