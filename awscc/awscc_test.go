@@ -2,6 +2,7 @@ package awscc
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -60,6 +61,9 @@ func Test_awsccManager_ListTypes(t *testing.T) {
 				t.Errorf("awsccManager.ListTypes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			// mockResources is a map, so the order of both got and want is unstable
+			sort.Slice(got, func(i, j int) bool { return *got[i] < *got[j] })
+			sort.Slice(tt.want, func(i, j int) bool { return *tt.want[i] < *tt.want[j] })
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("awsccManager.ListTypes() = %v, want %v", got, tt.want)
 			}
