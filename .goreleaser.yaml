@@ -31,6 +31,7 @@ changelog:
   skip: true
 brews:
   - name: awscccli
+    skip_upload: true
     tap:
       owner: chroju
       name: homebrew-tap
