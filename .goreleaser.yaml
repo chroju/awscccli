@@ -1,3 +1,4 @@
+version: 2
 env:
   - GO111MODULE=on
 before:
@@ -24,21 +25,8 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: ["zip"]
     files:
       - none*
 changelog:
-  skip: true
-brews:
-  - name: awscccli
-    skip_upload: true
-    tap:
-      owner: chroju
-      name: homebrew-tap
-      token:
-    url_template: "https://github.com/chroju/awscccli/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-    description: "Simple AWS CLI with Cloud Control API."
-    homepage: "https://github.com/chroju/awscccli"
-    license: "MIT"
-    test: |
-      system "#{bin}/acc --version"
+  disable: true
